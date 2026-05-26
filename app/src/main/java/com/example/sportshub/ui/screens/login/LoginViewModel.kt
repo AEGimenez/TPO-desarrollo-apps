@@ -1,5 +1,4 @@
 package com.example.sportshub.ui.screens.login
-package com.example.sportshub.ui.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
