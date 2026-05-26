@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "63181768800",
+    "project_id": "sportshub-ec5fb",
+    "storage_bucket": "sportshub-ec5fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63181768800:android:f5a234f841732ba3e09b05",
+        "android_client_info": {
+          "package_name": "com.example.sportshub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63181768800-akk1cel50ae6eio8baqopsg2mots4mgp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSNKqTowlZGsSks-A_sAAeOEGLHEmlQZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63181768800-akk1cel50ae6eio8baqopsg2mots4mgp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
