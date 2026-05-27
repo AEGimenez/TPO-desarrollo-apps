@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.sportshub.ui.navigation.AppNavigation // Asegúrate de que este import esté bien
+import com.example.sportshub.ui.navigation.AppNavigation
 import com.example.sportshub.ui.theme.SportsHUBTheme
 
 class MainActivity : ComponentActivity() {

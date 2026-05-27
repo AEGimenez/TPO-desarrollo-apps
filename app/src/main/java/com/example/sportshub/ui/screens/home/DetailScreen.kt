@@ -21,48 +21,97 @@ fun DetailScreen(matchId: String?, dao: SportsDao) {
     val viewModel = DetailViewModel(dao)
     val match by viewModel.match.collectAsState()
 
-    //Cargamos el partido al entrar
+    // Cargamos el partido al entrar
     LaunchedEffect(matchId) {
         matchId?.toIntOrNull()?.let { viewModel.loadMatch(it) }
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Detalle del Partido") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Detalle del Partido") }
+            )
+        }
     ) { padding ->
         Box(
-            modifier = Modifier.padding(padding).fillMaxSize(),
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
             match?.let { m ->
                 Card(
-                    modifier = Modifier.padding(16.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.padding(24.dp)) {
+                    Column(
+                        modifier = Modifier.padding(24.dp)
+                    ) {
                         Text(
                             text = "${m.homeTeamName} vs ${m.awayTeamName}",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
+
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Formateo de fecha legible
-                        val dateFormatted = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(m.date))
+                        val dateFormatted = SimpleDateFormat(
+                            "dd/MM/yyyy HH:mm",
+                            Locale.getDefault()
+                        ).format(Date(m.date))
 
                         DetailRow(label = "Fecha:", value = dateFormatted)
                         DetailRow(label = "Liga:", value = m.leagueName)
                         DetailRow(label = "Estadio:", value = m.venue ?: "No disponible")
-                        DetailRow(label = "Estado:", value = m.status)
+                        DetailRow(label = "Estado:", value = getStatusName(m.status))
                     }
                 }
-            } ?: CircularProgressIndicator(modifier = Modifier.padding(32.dp))
+            } ?: CircularProgressIndicator(
+                modifier = Modifier.padding(32.dp)
+            )
         }
     }
 }
 
 @Composable
 fun DetailRow(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Text(text = label, fontWeight = FontWeight.Bold, modifier = Modifier.width(100.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Text(
+            text = label,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.width(100.dp)
+        )
+
         Text(text = value)
+    }
+}
+
+fun getStatusName(status: String): String {
+    return when (status.uppercase()) {
+        "NS" -> "Programado"
+        "1H" -> "En vivo - Primer tiempo"
+        "HT" -> "Entretiempo"
+        "2H" -> "En vivo - Segundo tiempo"
+        "ET" -> "Tiempo extra"
+        "P" -> "Penales"
+        "FT" -> "Finalizado"
+        "AET" -> "Finalizado en tiempo extra"
+        "PEN" -> "Finalizado por penales"
+        "BT" -> "Pausa"
+        "SUSP" -> "Suspendido"
+        "INT" -> "Interrumpido"
+        "PST" -> "Postergado"
+        "POST" -> "Postergado"
+        "CANC" -> "Cancelado"
+        "CAN" -> "Cancelado"
+        "ABD" -> "Abandonado"
+        "AWD" -> "Resultado otorgado"
+        "WO" -> "Walkover"
+        else -> status
     }
 }

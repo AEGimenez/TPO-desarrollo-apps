@@ -59,9 +59,17 @@ fun AppNavigation() {
             val api = RetrofitClient.api
             val viewModel = HomeViewModel(MatchRepository(api, db.sportsDao()))
 
-            HomeScreen(viewModel = viewModel, onMatchClick = { id ->
-                navController.navigate("detail/$id")
-            })
+            HomeScreen(
+                viewModel = viewModel,
+                onMatchClick = { id ->
+                    navController.navigate("detail/$id")
+                },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            )
         }
 
 
