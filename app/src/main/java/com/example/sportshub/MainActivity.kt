@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import com.example.sportshub.ui.navigation.AppNavigation // Asegúrate de que este import esté bien
 import com.example.sportshub.ui.theme.SportsHUBTheme
 
-class MainActivity : ComponentActivity() { // Si necesitas biometría, puedes cambiar a FragmentActivity
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
