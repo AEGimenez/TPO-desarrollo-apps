@@ -2,7 +2,6 @@ package com.example.sportshub.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-// Esta clase envuelve la respuesta de la API (que siempre viene dentro de un array "events")
 data class MatchesResponse(
     @SerializedName("events") val events: List<MatchDto>?
 )

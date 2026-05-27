@@ -13,4 +13,11 @@ interface TheSportsDbApi {
     // Obtiene los últimos 15 eventos finalizados de una liga específica
     @GET("eventspastleague.php")
     suspend fun getPastMatches(@Query("id") leagueId: String): MatchesResponse
+
+    // Obtiene todos los partidos de una temporada específica (Premium)
+    @GET("eventsseason.php")
+    suspend fun getMatchesBySeason(
+        @Query("id") leagueId: String,
+        @Query("s") season: String
+    ): MatchesResponse
 }

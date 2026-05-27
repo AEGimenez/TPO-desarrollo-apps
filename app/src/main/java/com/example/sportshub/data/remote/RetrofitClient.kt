@@ -6,11 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-
-    // La URL base obligatoria según el TP
-    private const val BASE_URL = "https://www.thesportsdb.com/api/v1/json/123/"
-
-    // El interceptor nos va a permitir ver en la consola (Logcat) las llamadas y respuestas de internet (Súper útil si algo falla)
+    private const val BASE_URL = "https://www.thesportsdb.com/api/v1/json/7576791202/"
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -19,12 +15,11 @@ object RetrofitClient {
         .addInterceptor(loggingInterceptor)
         .build()
 
-    // Instancia única de Retrofit para toda la app
     val api: TheSportsDbApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create()) // Convierte el JSON a nuestras clases DTO
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TheSportsDbApi::class.java)
     }

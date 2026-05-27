@@ -11,19 +11,27 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SportsDao {
 
-    // ----- PARTIDOS -----
     @Query("SELECT * FROM matches ORDER BY date ASC")
     fun getAllMatches(): Flow<List<MatchEntity>>
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertMatches(matches: List<MatchEntity>)
 
-    // ----- NOTICIAS -----
     @Query("SELECT * FROM news ORDER BY publishedAt DESC")
     fun getAllNews(): Flow<List<NewsEntity>>
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertNews(news: List<NewsEntity>)
 
-    // ----- AGREGARÁS MÁS MÉTODOS ACÁ LUEGO -----
+    @Query("SELECT * FROM matches WHERE id = :matchId")
+    suspend fun getMatchById(matchId: Int): MatchEntity?
+
+    @Query("SELECT * FROM matches WHERE homeTeamName LIKE '%' || :query || '%' OR awayTeamName LIKE '%' || :query || '%'")
+    fun searchMatches(query: String): Flow<List<MatchEntity>>
+
+    @Query("SELECT * FROM matches WHERE leagueId = :leagueId ORDER BY date ASC")
+    fun getMatchesByLeague(leagueId: Int): Flow<List<MatchEntity>>
+
+    @Query("SELECT * FROM matches WHERE leagueId = :leagueId AND (homeTeamName LIKE '%' || :query || '%' OR awayTeamName LIKE '%' || :query || '%') ORDER BY date ASC")
+    fun searchMatchesInLeague(leagueId: Int, query: String): Flow<List<MatchEntity>>
 }

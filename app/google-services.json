@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "63181768800-kh5ivf5m78uq3au3lfibg3sm6k1crinp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sportshub",
+            "certificate_hash": "58fcbff1151ef00ee3b7f0bf8b5be49925863634"
+          }
+        },
+        {
           "client_id": "63181768800-akk1cel50ae6eio8baqopsg2mots4mgp.apps.googleusercontent.com",
           "client_type": 3
         }

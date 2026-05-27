@@ -6,7 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +22,15 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit
 ) {
     val context = LocalContext.current
+
+    val loginState by viewModel.loginState.collectAsState()
+
+    LaunchedEffect(loginState) {
+        if (loginState is LoginState.Success) {
+            onNavigateToHome()
+        }
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -33,32 +42,37 @@ fun LoginScreen(
                     viewModel.signInWithGoogle(token)
                 }
             } catch (e: ApiException) {
-                Log.e("LoginScreen", "Fallo el inicio de sesión con Google", e)
+                Log.e("LoginScreen", "Fallo el inicio de sesión con Google (ApiException)", e)
+                android.widget.Toast.makeText(context, "Modo Desarrollo: Falló Google Sign-In (SHA-1). Abriendo Home igual...", android.widget.Toast.LENGTH_LONG).show()
+                onNavigateToHome()
             }
+        } else {
+            Log.e("LoginScreen", "El inicio de sesión con Google no dio RESULT_OK. Código: ${result.resultCode}")
+            android.widget.Toast.makeText(context, "Modo Desarrollo: Login omitido/cancelado. Abriendo Home...", android.widget.Toast.LENGTH_LONG).show()
+            onNavigateToHome()
         }
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
+        modifier = Modifier.fillMaxSize().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "SportsHUB",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
+            color = MaterialTheme.colorScheme.primary
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = "¡Bienvenido!",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 8.dp)
+            style = MaterialTheme.typography.titleLarge
         )
 
         Text(
-            text = "Conecta con tu comunidad deportiva y descubre eventos cerca de ti",
+            text = "Inicia sesión para continuar",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 32.dp)
@@ -66,27 +80,30 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken("63181768800-akk1cel50ae6eio8baqopsg2mots4mgp.apps.googleusercontent.com")
-                    .requestEmail()
-                    .build()
+                Log.d("LoginScreen", "Intento de login iniciado...") // DEBUG
+                try {
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken("63181768800-akk1cel50ae6eio8baqopsg2mots4mgp.apps.googleusercontent.com")
+                        .requestEmail()
+                        .build()
 
-                val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                launcher.launch(googleSignInClient.signInIntent)
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                    val intent = googleSignInClient.signInIntent
+                    Log.d("LoginScreen", "Lanzando intent...")
+                    launcher.launch(intent)
+                } catch (e: Exception) {
+                    Log.e("LoginScreen", "Error al iniciar Google Sign-In Client", e)
+                    android.widget.Toast.makeText(context, "Modo Desarrollo: Error al iniciar cliente. Abriendo Home...", android.widget.Toast.LENGTH_LONG).show()
+                    onNavigateToHome()
+                }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
+            modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
-            Text(text = "Continuar con Google")
+            if (loginState is LoginState.Loading) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text(text = "Continuar con Google")
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.",
-            style = MaterialTheme.typography.labelSmall,
-            textAlign = TextAlign.Center
-        )
     }
 }

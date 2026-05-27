@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favorites")
 data class FavoriteEntity(
     @PrimaryKey val id: Int,
-    val type: String, // "team" o "league"
+    val type: String,
     val name: String,
     val logo: String,
     val country: String?,
