@@ -33,13 +33,16 @@ class LoginViewModel : ViewModel() {
                 val authResult = auth.signInWithCredential(credential).await()
                 val user = authResult.user
                 if (user != null) {
-                    try {
-                        val userDocRef = db.collection("users").document(user.uid)
-                        if (!userDocRef.get().await().exists()) {
-                            userDocRef.set(hashMapOf("email" to user.email)).await()
+                    // Sincronizar en background para no bloquear el inicio de sesión
+                    viewModelScope.launch {
+                        try {
+                            val userDocRef = db.collection("users").document(user.uid)
+                            if (!userDocRef.get().await().exists()) {
+                                userDocRef.set(hashMapOf("email" to user.email)).await()
+                            }
+                        } catch (firestoreException: Exception) {
+                            Log.w("LoginViewModel", "No se pudo sincronizar el usuario en Firestore (offline): ${firestoreException.message}")
                         }
-                    } catch (firestoreException: Exception) {
-                        Log.w("LoginViewModel", "No se pudo sincronizar el usuario en Firestore (offline): ${firestoreException.message}")
                     }
                     _loginState.value = LoginState.Success
                 }

@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
 import com.example.sportshub.ui.theme.DarkBlueHeader
 
 @Composable
@@ -61,13 +63,19 @@ fun SplashScreen(navController: NavController) {
         }
     }
 
+    val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         delay(1500)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (currentUser != null) {
-            navController.navigate("home") {
+            val sharedPrefs = context.getSharedPreferences("sportshub_prefs", Context.MODE_PRIVATE)
+            val isCompleted = sharedPrefs.getBoolean("onboarding_completed_${currentUser.uid}", false)
+            
+            val target = if (isCompleted) "main_container" else "onboarding"
+            navController.navigate(target) {
                 popUpTo("splash") { inclusive = true }
             }
         } else {

@@ -1,8 +1,10 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
-    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
+    id("com.google.devtools.ksp") version "2.3.2"
 }
 
 android {
@@ -17,6 +19,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Load gemini.api.key from local.properties if it exists
+        val properties = Properties()
+        val propertiesFile = project.rootProject.file("local.properties")
+        var geminiApiKey = ""
+        if (propertiesFile.exists()) {
+            val stream = propertiesFile.inputStream()
+            properties.load(stream)
+            stream.close()
+            geminiApiKey = properties.getProperty("gemini.api.key") ?: ""
+        }
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -34,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -42,6 +57,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -70,4 +86,16 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
 
+    // Koin for dependency injection
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
+    // Lifecycle Compose for collectAsStateWithLifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
+
+    // Google Gemini API for Generative AI chatbot
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Unit Testing libraries
+    testImplementation("io.mockk:mockk:1.13.9")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
 }

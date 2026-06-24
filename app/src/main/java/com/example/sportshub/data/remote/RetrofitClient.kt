@@ -23,4 +23,13 @@ object RetrofitClient {
             .build()
             .create(TheSportsDbApi::class.java)
     }
+
+    val newsApi: NewsApi by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://newsapi.org/v2/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NewsApi::class.java)
+    }
 }

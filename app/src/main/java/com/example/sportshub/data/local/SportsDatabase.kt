@@ -9,6 +9,7 @@ import com.example.sportshub.data.local.entities.FavoriteEntity
 import com.example.sportshub.data.local.entities.NewsEntity
 import com.example.sportshub.data.local.entities.StandingEntity
 import com.example.sportshub.data.local.entities.TeamEntity
+import com.example.sportshub.data.local.entities.ChatMessageEntity
 
 @Database(
     entities = [
@@ -17,8 +18,9 @@ import com.example.sportshub.data.local.entities.TeamEntity
         NewsEntity::class,
         StandingEntity::class,
         FavoriteEntity::class,
+        ChatMessageEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class SportsDatabase : RoomDatabase() {
@@ -35,7 +37,9 @@ abstract class SportsDatabase : RoomDatabase() {
                     context.applicationContext,
                     SportsDatabase::class.java,
                     "sportshub_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }
